@@ -1,0 +1,26 @@
+# Standards
+node_modules
+server
+
+# Mac
+.DS_STORE
+
+# Build
+build
+
+# Composer
+vendor
+
+### Sass template
+.sass-cache/
+*.css.map
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed

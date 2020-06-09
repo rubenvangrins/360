@@ -1,0 +1,22 @@
+# Dependency directory
+node_modules/
+server/vendor/
+
+# Caching
+.cache
+
+# Environment
+.env
+
+# Logs
+logs
+*.log
+
+# Debug log from npm
+npm-debug.log
+
+# OSX Files
+.DS_Store
+
+# Build files
+# build

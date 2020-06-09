@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  background: var(--color-black);
+}
+
+canvas {
+  width: 100vw;
+  height: 100vh;
+}
+
+button {
+  padding: 15px 30px;
+
+  cursor: pointer;
+
+  font-family: var(--font-f-base);
+  font-size: var(--font-s-button);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-button);
+
+  color: var(--color-white);
+  background: none;
+
+  border: 1px solid white;
+}
