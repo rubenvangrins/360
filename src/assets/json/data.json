@@ -1,0 +1,244 @@
+{
+  "stages": [
+    {
+      "id": 0,
+      "name": "bar-a",
+      "outerImage": "./src/assets/stages/kelder/bar-a/bar-a.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "atleten",
+          "url": "./src/assets/stages/kelder/bar-a/1.mp4",
+          "x": 1567.5,
+          "y": 1002,
+          "width": 200,
+          "height": 164
+        },
+        {
+          "id": 1,
+          "name": "barman",
+          "url": "./src/assets/stages/kelder/bar-a/2.mp4",
+          "x": 2654,
+          "y": 928,
+          "width": 192,
+          "height": 262
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "bar-b",
+      "outerImage": "./src/assets/stages/kelder/bar-b/bar-b.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "barman",
+          "url": "./src/assets/stages/kelder/bar-b/1.mp4",
+          "x": 2382.5,
+          "y": 855.5,
+          "width": 324,
+          "height": 492
+        },
+        {
+          "id": 1,
+          "name": "bar-stel",
+          "url": "./src/assets/stages/kelder/bar-b/2.mp4",
+          "x": 3004.5,
+          "y": 913.5,
+          "width": 426,
+          "height": 520
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "zaal-a",
+      "outerImage": "./src/assets/stages/kelder/zaal-a/zaal-a.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "atleten",
+          "url": "./src/assets/stages/kelder/zaal-a/1.mp4",
+          "x": 1452,
+          "y": 1035,
+          "width": 908,
+          "height": 624
+        },
+        {
+          "id": 1,
+          "name": "publiek",
+          "url": "./src/assets/stages/kelder/zaal-a/2.mp4",
+          "x": 3352,
+          "y": 947.5,
+          "width": 488,
+          "height": 450
+        },
+        {
+          "id": 2,
+          "name": "jw-roy",
+          "url": "./src/assets/stages/kelder/zaal-a/3.mp4",
+          "x": 2953.5,
+          "y": 946,
+          "width": 148,
+          "height": 314
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "zaal-b",
+      "outerImage": "./src/assets/stages/kelder/zaal-b/zaal-b.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "JW-Roy",
+          "url": "./src/assets/stages/kelder/zaal-b/1.mp4",
+          "x": 2283.5,
+          "y": 916.5,
+          "width": 508,
+          "height": 600
+        },
+        {
+          "id": 1,
+          "name": "atleet",
+          "url": "./src/assets/stages/kelder/zaal-b/2.mp4",
+          "x": 1543.5,
+          "y": 1011.5,
+          "width": 186,
+          "height": 204
+        },
+        {
+          "id": 2,
+          "name": "stel",
+          "url": "./src/assets/stages/kelder/zaal-b/3.mp4",
+          "x": 860,
+          "y": 943.5,
+          "width": 444,
+          "height": 592
+        },
+        {
+          "id": 3,
+          "name": "bar-stel",
+          "url": "./src/assets/stages/kelder/zaal-b/4.mp4",
+          "x": 547,
+          "y": 979,
+          "width": 150,
+          "height": 156
+        },
+        {
+          "id": 4,
+          "name": "vrienden-1",
+          "url": "./src/assets/stages/kelder/zaal-b/5.mp4",
+          "x": 0,
+          "y": 892,
+          "width": 416,
+          "height": 720
+        },
+        {
+          "id": 5,
+          "name": "vrienden-2",
+          "url": "./src/assets/stages/kelder/zaal-b/6.mp4",
+          "x": 3648,
+          "y": 892,
+          "width": 192,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "brouwerij-a",
+      "outerImage": "./src/assets/stages/brouwerij/brouwerij-a/brouwerij-a.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "brouwmeester",
+          "url": "./src/assets/stages/brouwerij/brouwerij-a/1.mp4",
+          "x": 349.5,
+          "y": 887.5,
+          "width": 538,
+          "height": 550
+        },
+        {
+          "id": 1,
+          "name": "jasper",
+          "url": "./src/assets/stages/brouwerij/brouwerij-a/2.mp4",
+          "x": 1010.5,
+          "y": 733.5,
+          "width": 173,
+          "height": 416
+        },
+        {
+          "id": 2,
+          "name": "werknemers",
+          "url": "./src/assets/stages/brouwerij/brouwerij-a/3.mp4",
+          "x": 3232.5,
+          "y": 936,
+          "width": 439,
+          "height": 155
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "brouwerij-b",
+      "outerImage": "./src/assets/stages/brouwerij/brouwerij-b/brouwerij-b.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "bier_vullen",
+          "url": "./src/assets/stages/brouwerij/brouwerij-b/1.mp4",
+          "x": 2400,
+          "y": 871.5,
+          "width": 474,
+          "height": 504
+        },
+        {
+          "id": 1,
+          "name": "bier_draaien",
+          "url": "./src/assets/stages/brouwerij/brouwerij-b/2.mp4",
+          "x": 2874,
+          "y": 1050,
+          "width": 43,
+          "height": 80
+        },
+        {
+          "id": 2,
+          "name": "labelen",
+          "url": "./src/assets/stages/brouwerij/brouwerij-b/3.mp4",
+          "x": 2993,
+          "y": 921,
+          "width": 286,
+          "height": 259
+        },
+        {
+          "id": 3,
+          "name": "dozen_links",
+          "url": "./src/assets/stages/brouwerij/brouwerij-b/4.mp4",
+          "x": 0,
+          "y": 895,
+          "width": 62,
+          "height": 432
+        },
+        {
+          "id": 4,
+          "name": "dozen_rechts",
+          "url": "./src/assets/stages/brouwerij/brouwerij-b/5.mp4",
+          "x": 3600,
+          "y": 895,
+          "width": 240,
+          "height": 432
+        },
+        {
+          "id": 5,
+          "name": "brouwer",
+          "url": "./src/assets/stages/brouwerij/brouwerij-b/6.mp4",
+          "x": 1272,
+          "y": 877.5,
+          "width": 132,
+          "height": 271
+        }
+      ]
+    }
+  ]
+}
