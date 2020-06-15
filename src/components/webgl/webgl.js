@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as dat from 'dat.gui';
 
-import data from '../../assets/json/data';
+import data from '../../assets/json/data-small';
 
 class WebGL {
   constructor() {
@@ -9,6 +10,8 @@ class WebGL {
     this.scenes = [];
     this.renderer = undefined;
     this.dataStages = data.stages;
+
+    this.gui = new dat.GUI();
   }
 
   createScenes() {
@@ -17,6 +20,8 @@ class WebGL {
 
     this.dataStages.forEach((stage) => {
       const scene = new THREE.Scene();
+      scene.name = stage.name;
+      scene.active = false;
       // make a list item
       const element = document.createElement('div');
       element.className = 'list-item';
@@ -32,12 +37,20 @@ class WebGL {
       scene.userData.element = sceneElement;
       content.appendChild(element);
 
-      const camera = new THREE.PerspectiveCamera(50, 1, 1, 10);
-      camera.position.z = 2;
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.set(0, 0, 1);
       scene.userData.camera = camera;
 
       const controls = new OrbitControls(scene.userData.camera, scene.userData.element);
       scene.userData.controls = controls;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.1;
+      controls.rotateSpeed = -0.25;
 
       // Create CanvasTexture
       const canvasTextureEl = document.createElement('canvas');
@@ -63,30 +76,35 @@ class WebGL {
         canvasTexture.needsUpdate = true;
       };
 
-      scene.userData.outerImage = img;
-
       stage.videos.forEach((dataVideo) => {
         const video = document.createElement('video');
         video.src = dataVideo.url;
         video.muted = true;
         video.loop = true;
+        video.play();
 
-        ctx.drawImage(
-          video,
-          dataVideo.x,
-          dataVideo.y,
-          dataVideo.width,
-          dataVideo.height,
-        );
-        canvasTexture.needsUpdate = true;
+        const playVideo = () => {
+          ctx.drawImage(
+            video,
+            dataVideo.x,
+            dataVideo.y,
+            dataVideo.width,
+            dataVideo.height,
+          );
+          canvasTexture.needsUpdate = true;
+        };
 
-        scene.userData.videos = video;
+        const run = () => {
+          setTimeout(() => {
+            window.requestAnimationFrame(run.bind(this));
+            playVideo();
+          }, 1000 / 60);
+        };
+
+        run();
       });
-
-      scene.userData.ctx = ctx;
-
       // add one random mesh to each scene
-      const geometry = new THREE.SphereBufferGeometry(0.5, 32, 32);
+      const geometry = new THREE.SphereBufferGeometry(1, 32, 32).scale(-1, 1, 1);
 
       const material = new THREE.MeshBasicMaterial({
         map: canvasTexture
@@ -96,9 +114,16 @@ class WebGL {
       this.scenes.push(scene);
     });
 
+    this.scenes[0].active = true;
+
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
+
+    [...this.scenes].forEach((scene) => {
+      this.activeSwitch = this.gui.addFolder(scene.name);
+      this.activeSwitch.add(scene, 'active');
+    });
   }
 
   updateSize() {
@@ -111,8 +136,10 @@ class WebGL {
   }
 
   animate() {
-    this.render();
-    window.requestAnimationFrame(this.animate.bind(this));
+    [...this.scenes].forEach((scene) => {
+      if (!scene.active) return;
+      window.requestAnimationFrame(this.render);
+    });
   }
 
   render() {
@@ -120,8 +147,8 @@ class WebGL {
 
     this.canvas.style.transform = `translateY(${window.scrollY}px)`;
 
-
     this.renderer.setClearColor(0xe0e0e0);
+
     this.renderer.setScissorTest(true);
 
     this.scenes.forEach((scene) => {
