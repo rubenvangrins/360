@@ -1,43 +1,54 @@
-import * as THREE from 'three';
+import {
+  Scene,
+  WebGLRenderer,
+  PerspectiveCamera,
+  CanvasTexture,
+  LinearFilter,
+  SphereBufferGeometry,
+  MeshBasicMaterial,
+  Mesh
+} from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-import data from '../../assets/json/data';
+import data from '../../assets/json/data-small';
 
 class WebGL {
   constructor() {
-    this.canvas = undefined;
+    this.raf = 0;
+
     this.scenes = [];
-    this.renderer = undefined;
     this.dataStages = data.stages;
+
+    this.renderer = new WebGLRenderer({
+      antialias: true
+    });
+
+    this.activeScene = null;
+
+    this.renderer.setPixelRatio(window.devicePixelRatio);
   }
 
   createScenes() {
-    this.canvas = document.getElementById('c');
-    let content = document.getElementById('content');
-
     this.dataStages.forEach((stage) => {
-      const scene = new THREE.Scene();
-      // make a list item
-      const element = document.createElement('div');
-      element.className = 'list-item';
+      this.scene = new Scene();
 
-      const sceneElement = document.createElement('div');
-      element.appendChild(sceneElement);
+      this.scene.name = stage.name;
 
-      const descriptionElement = document.createElement('div');
-      descriptionElement.innerText = 'Scene ' + (stage.name);
-      element.appendChild(descriptionElement);
+      const camera = new PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.set(0, 0, 1);
+      this.scene.userData.camera = camera;
 
-      // the element that represents the area we want to render the scene
-      scene.userData.element = sceneElement;
-      content.appendChild(element);
+      const controls = new OrbitControls(this.scene.userData.camera, this.renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.1;
+      controls.rotateSpeed = -0.25;
 
-      const camera = new THREE.PerspectiveCamera(50, 1, 1, 10);
-      camera.position.z = 2;
-      scene.userData.camera = camera;
-
-      const controls = new OrbitControls(scene.userData.camera, scene.userData.element);
-      scene.userData.controls = controls;
+      this.scene.userData.controls = controls;
 
       // Create CanvasTexture
       const canvasTextureEl = document.createElement('canvas');
@@ -46,8 +57,8 @@ class WebGL {
       canvasTextureEl.width = 3840;
       canvasTextureEl.height = 1920;
 
-      const canvasTexture = new THREE.CanvasTexture(canvasTextureEl);
-      canvasTexture.minFilter = THREE.LinearFilter;
+      const canvasTexture = new CanvasTexture(canvasTextureEl);
+      canvasTexture.minFilter = LinearFilter;
 
       const img = new Image();
       img.src = stage.outerImage;
@@ -63,100 +74,100 @@ class WebGL {
         canvasTexture.needsUpdate = true;
       };
 
-      scene.userData.outerImage = img;
+      const videos = [];
 
       stage.videos.forEach((dataVideo) => {
+        // Set-up video element
         const video = document.createElement('video');
         video.src = dataVideo.url;
         video.muted = true;
         video.loop = true;
+        video.pause();
 
-        ctx.drawImage(
-          video,
-          dataVideo.x,
-          dataVideo.y,
-          dataVideo.width,
-          dataVideo.height,
-        );
-        canvasTexture.needsUpdate = true;
+        // Draw video element to canvas
+        const drawVideo = (videoSource) => {
+          ctx.drawImage(
+            videoSource,
+            dataVideo.x,
+            dataVideo.y,
+            dataVideo.width,
+            dataVideo.height,
+          );
+          canvasTexture.needsUpdate = true;
+        };
 
-        scene.userData.videos = video;
+        this.scene.userData.videoPlay = drawVideo;
+        videos.push(video);
       });
 
-      scene.userData.ctx = ctx;
+      this.scene.userData.videos = videos;
 
-      // add one random mesh to each scene
-      const geometry = new THREE.SphereBufferGeometry(0.5, 32, 32);
+      const geometry = new SphereBufferGeometry(10, 32, 32).scale(-1, 1, 1);
 
-      const material = new THREE.MeshBasicMaterial({
+      const material = new MeshBasicMaterial({
         map: canvasTexture
       });
 
-      scene.add(new THREE.Mesh(geometry, material));
-      this.scenes.push(scene);
+      this.scene.add(new Mesh(geometry, material));
+      this.scenes.push(this.scene);
     });
 
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
-    this.renderer.setClearColor(0xffffff, 1);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.activeScene = this.scenes[0];
   }
 
-  updateSize() {
-    let width = this.canvas.clientWidth;
-    let height = this.canvas.clientHeight;
-
-    if (this.canvas.width !== width || this.canvas.height !== height) {
-      this.renderer.setSize(width, height, false);
-    }
+  events() {
+    window.addEventListener('resize', this.onResize);
   }
 
-  animate() {
-    this.render();
-    window.requestAnimationFrame(this.animate.bind(this));
+  onResize = () => {
+    [...this.scenes].forEach((scene) => {
+      scene.userData.camera.aspect = window.innerWidth / window.innerHeight;
+      scene.userData.camera.updateProjectionMatrix();
+    });
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  render() {
-    this.updateSize();
+  render = () => {
+    this.raf = undefined;
 
-    this.canvas.style.transform = `translateY(${window.scrollY}px)`;
+    [...this.scenes].forEach((scene) => {
+      scene.userData.videos.forEach((video) => {
+        video.play();
+        scene.userData.videoPlay(video);
+      });
 
+      scene.userData.controls.update();
 
-    this.renderer.setClearColor(0xe0e0e0);
-    this.renderer.setScissorTest(true);
-
-    this.scenes.forEach((scene) => {
-      // get the element that is a place holder for where we want to
-      // draw the scene
-      let element = scene.userData.element;
-
-      // // get its position relative to the page's viewport
-      let rect = element.getBoundingClientRect();
-
-      // // check if it's offscreen. If so skip it
-      if (rect.bottom < 0 || rect.top > this.renderer.domElement.clientHeight
-       || rect.right < 0 || rect.left > this.renderer.domElement.clientWidth) {
-        return; // it's off screen
-      }
-
-      // // set the viewport
-      let width = rect.right - rect.left;
-      let height = rect.bottom - rect.top;
-      let left = rect.left;
-      let bottom = this.renderer.domElement.clientHeight - rect.bottom;
-
-      this.renderer.setViewport(left, bottom, width, height);
-      this.renderer.setScissor(left, bottom, width, height);
-
-      let camera = scene.userData.camera;
+      const camera = scene.userData.camera;
 
       this.renderer.render(scene, camera);
     });
+
+    this.start();
   }
 
+  start = () => {
+    if (!this.raf) {
+      this.raf = window.requestAnimationFrame(this.render);
+    }
+  }
+
+  stop = () => {
+    if (this.raf) {
+      window.cancelAnimationFrame(this.raf);
+      this.raf = undefined;
+    }
+  }
 
   init() {
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    document.body.appendChild(this.renderer.domElement);
+
     this.createScenes();
-    this.animate();
+    this.events();
   }
 }
 

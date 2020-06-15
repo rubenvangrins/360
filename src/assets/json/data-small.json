@@ -1,0 +1,53 @@
+{
+  "stages": [
+    {
+      "id": 0,
+      "name": "bar-a",
+      "outerImage": "./src/assets/stages/kelder/bar-a/bar-a.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "atleten",
+          "url": "./src/assets/stages/kelder/bar-a/1.mp4",
+          "x": 1567.5,
+          "y": 1002,
+          "width": 200,
+          "height": 164
+        },
+        {
+          "id": 1,
+          "name": "barman",
+          "url": "./src/assets/stages/kelder/bar-a/2.mp4",
+          "x": 2654,
+          "y": 928,
+          "width": 192,
+          "height": 262
+        }
+      ]
+    },{
+      "id": 1,
+      "name": "bar-b",
+      "outerImage": "./src/assets/stages/kelder/bar-b/bar-b.jpg",
+      "videos": [
+        {
+          "id": 0,
+          "name": "barman",
+          "url": "./src/assets/stages/kelder/bar-b/1.mp4",
+          "x": 2382.5,
+          "y": 855.5,
+          "width": 324,
+          "height": 492
+        },
+        {
+          "id": 1,
+          "name": "bar-stel",
+          "url": "./src/assets/stages/kelder/bar-b/2.mp4",
+          "x": 3004.5,
+          "y": 913.5,
+          "width": 426,
+          "height": 520
+        }
+      ]
+    }
+  ]
+}

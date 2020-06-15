@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="./build/css/index.css">
 </head>
 <body>
-    <canvas id="c"></canvas>
-
-    <div id="content"></div>
     <script src="./build/js/bundle.js"></script>
 </body>
 </html>
