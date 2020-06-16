@@ -1,5 +1,9 @@
 // Styles
 import './index.scss';
+import { instances } from './store';
+import Time from './utils/time';
+
+instances.time = new Time();
 
 // Components
 // import WebGL from './components/webgl/webgl';

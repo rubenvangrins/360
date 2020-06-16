@@ -24,30 +24,6 @@
           "height": 262
         }
       ]
-    },{
-      "id": 1,
-      "name": "bar-b",
-      "outerImage": "./src/assets/stages/kelder/bar-b/bar-b.jpg",
-      "videos": [
-        {
-          "id": 0,
-          "name": "barman",
-          "url": "./src/assets/stages/kelder/bar-b/1.mp4",
-          "x": 2382.5,
-          "y": 855.5,
-          "width": 324,
-          "height": 492
-        },
-        {
-          "id": 1,
-          "name": "bar-stel",
-          "url": "./src/assets/stages/kelder/bar-b/2.mp4",
-          "x": 3004.5,
-          "y": 913.5,
-          "width": 426,
-          "height": 520
-        }
-      ]
     }
   ]
 }

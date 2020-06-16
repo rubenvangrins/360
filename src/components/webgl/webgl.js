@@ -8,7 +8,10 @@ import {
   MeshBasicMaterial,
   Mesh
 } from 'three';
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+import { instances } from '../../store';
 
 import data from '../../assets/json/data-small';
 
@@ -23,8 +26,6 @@ class WebGL {
       antialias: true
     });
 
-    this.activeScene = null;
-
     this.renderer.setPixelRatio(window.devicePixelRatio);
   }
 
@@ -33,6 +34,7 @@ class WebGL {
       this.scene = new Scene();
 
       this.scene.name = stage.name;
+      this.scene.active = false;
 
       const camera = new PerspectiveCamera(
         75,
@@ -112,7 +114,7 @@ class WebGL {
       this.scenes.push(this.scene);
     });
 
-    this.activeScene = this.scenes[0];
+    this.scenes[0].active = true;
   }
 
   events() {
@@ -129,8 +131,6 @@ class WebGL {
   }
 
   render = () => {
-    this.raf = undefined;
-
     [...this.scenes].forEach((scene) => {
       scene.userData.videos.forEach((video) => {
         video.play();
@@ -143,21 +143,6 @@ class WebGL {
 
       this.renderer.render(scene, camera);
     });
-
-    this.start();
-  }
-
-  start = () => {
-    if (!this.raf) {
-      this.raf = window.requestAnimationFrame(this.render);
-    }
-  }
-
-  stop = () => {
-    if (this.raf) {
-      window.cancelAnimationFrame(this.raf);
-      this.raf = undefined;
-    }
   }
 
   init() {
@@ -168,6 +153,11 @@ class WebGL {
 
     this.createScenes();
     this.events();
+
+    [...this.scenes].forEach((scene) => {
+      if (scene.active) instances.time.emitter.on('tick', this.render);
+      instances.time.emitter.off('tick', this.render);
+    });
   }
 }
 
