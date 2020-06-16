@@ -27,6 +27,8 @@ class WebGL {
     });
 
     this.renderer.setPixelRatio(window.devicePixelRatio);
+
+    this.button = document.querySelector('.js-button');
   }
 
   createScenes() {
@@ -52,9 +54,11 @@ class WebGL {
 
       this.scene.userData.controls = controls;
 
-      // Create CanvasTexture
+      // Create this.canvasTexture
       const canvasTextureEl = document.createElement('canvas');
       const ctx = canvasTextureEl.getContext('2d');
+
+      this.scene.userData.ctx = ctx;
 
       canvasTextureEl.width = 3840;
       canvasTextureEl.height = 1920;
@@ -78,29 +82,18 @@ class WebGL {
 
       const videos = [];
 
-      stage.videos.forEach((dataVideo) => {
+      stage.videos.forEach((video) => {
         // Set-up video element
-        const video = document.createElement('video');
-        video.src = dataVideo.url;
-        video.muted = true;
-        video.loop = true;
-        video.pause();
-
-        // Draw video element to canvas
-        const drawVideo = (videoSource) => {
-          ctx.drawImage(
-            videoSource,
-            dataVideo.x,
-            dataVideo.y,
-            dataVideo.width,
-            dataVideo.height,
-          );
-          canvasTexture.needsUpdate = true;
-        };
-
-        this.scene.userData.videoPlay = drawVideo;
-        videos.push(video);
+        const videoEl = document.createElement('video');
+        videoEl.src = video.url;
+        videoEl.muted = true;
+        videoEl.loop = true;
+        videoEl.pause();
+        videoEl.vidAttrs = video;
+        videos.push(videoEl);
       });
+
+      this.scene.userData.canvasTexture = canvasTexture;
 
       this.scene.userData.videos = videos;
 
@@ -119,6 +112,22 @@ class WebGL {
 
   events() {
     window.addEventListener('resize', this.onResize);
+
+    this.button.addEventListener('click', this.changeScene);
+  }
+
+  changeScene = () => {
+    if (this.scenes[0].active) {
+      this.scenes[0].active = false;
+      this.scenes[0].visibility = false;
+      this.scenes[1].active = true;
+      this.scenes[1].visibility = true;
+    } else if (this.scenes[1].active) {
+      this.scenes[1].active = false;
+      this.scenes[1].visibility = false;
+      this.scenes[0].active = true;
+      this.scenes[0].visibility = true;
+    }
   }
 
   onResize = () => {
@@ -130,18 +139,33 @@ class WebGL {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  start = () => {
+    instances.time.emitter.on('tick', this.render);
+  }
+
   render = () => {
     [...this.scenes].forEach((scene) => {
-      scene.userData.videos.forEach((video) => {
-        video.play();
-        scene.userData.videoPlay(video);
-      });
+      if (scene.active) {
+        scene.userData.videos.forEach((video) => {
+          video.play();
 
-      scene.userData.controls.update();
+          scene.userData.ctx.drawImage(
+            video,
+            video.vidAttrs.x,
+            video.vidAttrs.y,
+            video.vidAttrs.width,
+            video.vidAttrs.height
+          );
 
-      const camera = scene.userData.camera;
+          scene.userData.canvasTexture.needsUpdate = true;
+        });
 
-      this.renderer.render(scene, camera);
+        scene.userData.controls.update();
+
+        const camera = scene.userData.camera;
+
+        this.renderer.render(scene, camera);
+      }
     });
   }
 
@@ -154,10 +178,7 @@ class WebGL {
     this.createScenes();
     this.events();
 
-    [...this.scenes].forEach((scene) => {
-      if (scene.active) instances.time.emitter.on('tick', this.render);
-      instances.time.emitter.off('tick', this.render);
-    });
+    this.start();
   }
 }
 
