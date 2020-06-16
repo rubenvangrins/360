@@ -9,11 +9,13 @@ import {
   Mesh
 } from 'three';
 
+import * as dat from 'dat.gui';
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { instances } from '../../store';
 
-import data from '../../assets/json/data-small';
+import data from '../../assets/json/data';
 
 class WebGL {
   constructor() {
@@ -28,7 +30,7 @@ class WebGL {
 
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
-    this.button = document.querySelector('.js-button');
+    // this.button = document.querySelector('.js-button');
   }
 
   createScenes() {
@@ -107,27 +109,47 @@ class WebGL {
       this.scenes.push(this.scene);
     });
 
+
     this.scenes[0].active = true;
   }
 
   events() {
     window.addEventListener('resize', this.onResize);
 
-    this.button.addEventListener('click', this.changeScene);
+    // this.button.addEventListener('click', this.changeScene);
   }
 
-  changeScene = () => {
-    if (this.scenes[0].active) {
-      this.scenes[0].active = false;
-      this.scenes[0].visibility = false;
-      this.scenes[1].active = true;
-      this.scenes[1].visibility = true;
-    } else if (this.scenes[1].active) {
-      this.scenes[1].active = false;
-      this.scenes[1].visibility = false;
-      this.scenes[0].active = true;
-      this.scenes[0].visibility = true;
-    }
+  changeScene() {
+    this.gui = new dat.GUI();
+
+    this.params = {
+      name: this.scenes[0].name
+    };
+
+    this.gui.add(this.params, 'name', {
+      BarA: 'bar-a',
+      BarB: 'bar-b',
+      ZaalA: 'zaal-a',
+      ZaalB: 'zaal-b',
+      BrouwerijA: 'brouwerij-a',
+      BrouwerijB: 'brouwerij-b'
+    }).onFinishChange(() => {
+      [...this.scenes].forEach((scene) => {
+        scene.active = false;
+        scene.visible = false;
+        if (scene.name === this.params.name) {
+          scene.active = true;
+          scene.visible = true;
+        }
+      });
+    }).name('Change Scene');
+
+
+    // this.gui.add({ BarA: this.scenes[0], BarB: this.scenes[1] }).onFinishChange(() => {
+    //   [...this.scenes].forEach((scene) => {
+    //     console.log(scene);
+    //   });
+    // });
   }
 
   onResize = () => {
@@ -145,6 +167,8 @@ class WebGL {
 
   render = () => {
     [...this.scenes].forEach((scene) => {
+      scene.userData.controls.update();
+
       if (scene.active) {
         scene.userData.videos.forEach((video) => {
           video.play();
@@ -160,10 +184,7 @@ class WebGL {
           scene.userData.canvasTexture.needsUpdate = true;
         });
 
-        scene.userData.controls.update();
-
         const camera = scene.userData.camera;
-
         this.renderer.render(scene, camera);
       }
     });
@@ -177,6 +198,7 @@ class WebGL {
 
     this.createScenes();
     this.events();
+    this.changeScene();
 
     this.start();
   }
